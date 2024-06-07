@@ -18,6 +18,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_EMAIL = "email";
     private static final String COLUMN_PASSWORD = "password";
 
+    private static final String TABLE_NAME_BOOK = "book_ride";
+    private static final String BOOK_NAME = "book_name";
+    private static final String BOOK_ADDRESS = "book_address";
+    private static final String PICKUP = "pickup";
+    private static final String DESTINATION = "destination";
     public DatabaseHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         database = getWritableDatabase();
@@ -32,7 +37,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_EMAIL + " TEXT, " +
                 COLUMN_PASSWORD + " TEXT);";
 
+
+        String createBookTableQuery = "CREATE TABLE " + TABLE_NAME_BOOK + " (" +
+                BOOK_NAME + " TEXT, " +
+                BOOK_ADDRESS + " TEXT, " +
+                PICKUP + " TEXT, " +
+                DESTINATION + " TEXT);";
+
         sqLiteDatabase.execSQL(createTableQuery);
+        sqLiteDatabase.execSQL(createBookTableQuery);
         Log.d(TAG, "Table created with query: " + createTableQuery);
     }
 
@@ -59,4 +72,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
         }
     }
+
+
+    public boolean insertBookUser(String bookname, String book_addr , String pickup , String destination) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(BOOK_NAME, bookname);
+        cv.put(BOOK_ADDRESS, book_addr);
+        cv.put(PICKUP , pickup);
+        cv.put(DESTINATION , destination);
+
+        long res = database.insert(TABLE_NAME_BOOK, null, cv);
+
+        if (res == -1) {
+            Log.d(TAG, "Insert failed for email: " + bookname);
+            return false;
+        } else {
+            Log.d(TAG, "Insert succeeded for email: " + book_addr);
+            return true;
+        }
+    }
+
 }
